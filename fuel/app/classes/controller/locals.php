@@ -10,11 +10,10 @@ class Controller_Locals extends Controller_Base
      if($arrayAuthenticated['authenticated'])
      {
       $decodedToken = $this->decode($arrayAuthenticated['data']);
-      if ($decodedToken->id == $this->id_admin)
+      
+      try
       {
-          try 
-          {
-              //name
+             //name
               if(!isset($_POST['name']) || empty($_POST['name']))
               {
                         $json = $this->response(array(
@@ -186,11 +185,7 @@ class Controller_Locals extends Controller_Base
           {
                          return $this->respuesta(500, $e->getMessage(), '');
           }
-        }
-        else 
-        {
-                return $this->respuesta(400, 'No eres el admin', '');
-        }
+        
     }     
 }
 
@@ -253,12 +248,12 @@ class Controller_Locals extends Controller_Base
         $decodedToken = JWT::decode($arrayAuthenticated["data"], MY_KEY, array('HS256'));
         if(!empty($_POST['id']))
         {
-            $story = Model_Locals::find($_POST['id']);
-            if(isset($story))
+            $local = Model_Locals::find($_POST['id']);
+            if(isset($local))
             {
-                if($decodedToken->id == $story->id_user)
+                if($decodedToken->id == $local->id_user)
                 {
-                  $story->delete(); 
+                  $local->delete(); 
      
                   $json = $this->response(array(
                        'code' => 200,

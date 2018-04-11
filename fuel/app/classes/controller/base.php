@@ -1,16 +1,13 @@
 <?php
 use \Firebase\JWT\JWT;
 
-define('MY_KEY', 'tokens_key');
-define('id_admin', 1);
 
 class Controller_Base extends Controller_Rest
 {
-    private static $key = 'coctel';
+    private static $secret_key = 'coctelTV';
     private static $encrypt = ['HS256'];
     private static $aud = null;
-    /*public $id_admin = 1;
-    public $id_user = 2;*/
+    public $key = 'afjlasdkfhaihskjldfnkasbcvnmxbzcvbisdahbvjashvjkbaskvbakjbvlkashfkshdkfjasbdkfjhasjkf';
     
     protected function respuesta($code, $message, $data = [])
     {
@@ -24,30 +21,25 @@ class Controller_Base extends Controller_Rest
 
     protected function encode($data)
     {
-        return  JWT::encode($data, self::$key);
+        return  JWT::encode($data, $this->key);
         
     }
     
     protected function decode($data)
     {
-        return  JWT::decode($data, self::$key, array('HS256'));
+        return  JWT::decode($data, $this->key, array('HS256'));
         
     }
 
-	protected function encodeToken($userName, $surName, $born, $password, $id, $email, $id_role, $profilePicture)
+	protected function encodeToken($userName, $password, $id, $email)
     {
         $token = array(
-        		"id" => $id,
+                "id" => $id,
                 "userName" => $userName,
-                "surName" => $surName,
-                "born" => $born,
                 "password" => $password,
                 "email" => $email,
-                "role" => $id_role, 
-                "profilePicture" => $profilePicture            
-
         );
-        $encodedToken = JWT::encode($token, self::$key);
+        $encodedToken = JWT::encode($token, $this->key);
         return $encodedToken;
     }
 
@@ -57,7 +49,7 @@ class Controller_Base extends Controller_Rest
         $token = $header['Authorization'];
         if(!empty($token))
         {
-            $decodedToken = JWT::decode($token, self::$key, array('HS256'));
+            $decodedToken = JWT::decode($token, $this->key, array('HS256'));
             return $decodedToken;
         }      
     }
@@ -65,29 +57,25 @@ class Controller_Base extends Controller_Rest
     protected function authenticate()
     {
         try 
-        {   
+        {  
             $header = apache_request_headers();
             $token = $header['Authorization'];
             if(!empty($token))
             {
                 $decodedToken = JWT::decode($token, $this->key, array('HS256'));
                 $query = Model_Users::find('all', 
-                    [
-                        'where' => ['id' => $decodedToken->id,
+                    ['where' => ['id' => $decodedToken->id,
                                     'userName' => $decodedToken->userName,
-                                    'surname' => $decodedToken->surname,
-                                    'born' => $decodedToken->born,
                                     'password' => $decodedToken->password, 
-                                    'role' => $decodedToken->id_role,
                                     'email' => $decodedToken->email
                                  
                                 ]]);
 
-                if($query != null)
+                if($query == null)
                 {
                     $json = array(
                     'code' => 200,
-                    'message' => 'Usuario autenticado',
+                    'message' => 'Usuario autenticado query',
                     'authenticated' => true,
                     'data' => $token
                     );
@@ -97,7 +85,7 @@ class Controller_Base extends Controller_Rest
                 {
                     $json = $this->response(array(
                     'code' => 401,
-                    'message' => 'Usuario no autenticado',
+                    'message' => 'Usuario no autenticado no query',
                     'authenticated' => false,
                     'data' => null
                     ));
@@ -109,19 +97,19 @@ class Controller_Base extends Controller_Rest
             {
                 $json = $this->response(array(
                     'code' => 401,
-                    'message' => 'Usuario no autenticado',
+                    'message' => 'Usuario no autenticado is empty',
                     'authenticated' => false,
                     'data' => null
                     ));
                     return $json;
             }
-        } 
+        }
         catch (Exception $UnexpectedValueException)
         {
 
             $json = $this->response(array(
                     'code' => 401,
-                    'message' => 'Usuario no autenticado que no me entres aqui!',
+                    'message' => 'Usuario no autenticado!',
                     'authenticated' => false,
                     'data' => null
                     ));

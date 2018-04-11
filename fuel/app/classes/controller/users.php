@@ -265,7 +265,7 @@ class Controller_Users extends Controller_Base
 	    		$decodedToken = $this->decodeToken();
 	    			$arrayData = array();
 	    			$arrayData['userName'] = $decodedToken->userName;
-	    			$arrayData['userEmail'] = $decodedToken->email;
+	    			$arrayData['email'] = $decodedToken->email;
 	    			//$arrayData['profilePicture'] = $decodedToken->profilePicture;		    			
 	    			return $this->respuesta(200, 'info User', $arrayData);				
     	}
@@ -275,97 +275,7 @@ class Controller_Users extends Controller_Base
     	}
     }
 
-    //imagenes
     
-    //esta hecho falta probar
-	private function post_saveImage($profilePicture)
-	{
-			$pictureToSave = $profilePicture;
-
-	    	$pictureToSave->save();
-	    	$arrayData = array();
-	    	$arrayData['photoSaved'] = $arrayData;
-	    	$json = $this->response(array(
-	                'code' => 201,
-	                'message' => 'Imagen guardada',
-	                'data' => $arrayData
-	            ));
-	    	return $json;
-
-
-	}
-
-	//esta hecho falta probar
-    public function post_changeImage()
-    {
-    	$authenticated = $this->authenticate();
-    	$arrayAuthenticated = json_decode($authenticated, true);
-    
-    	if($arrayAuthenticated['authenticated'])
-    	 {
-	    		$decodedToken = $this->decodeToken();
-	    		$user = Model_Users::find($decodedToken->id);		
-	        try 
-	        {
-		        	if (!isset($_FILES['photo_path']) || empty($_FILES['photo_path'])) 
-		            {
-
-		            	return $this->respuesta(401, 'La photo esta vacia', $_FILES);
-		            }
-	        	 	$config = array(
-			            'path' => DOCROOT . 'assets/img',
-			            'randomize' => true,
-			            'ext_whitelist' => array('img', 'jpg', 'jpeg', 'gif', 'png'),
-			        );
-
-			        Upload::process($config);
-			        $photoToSave = "";
-			        if (Upload::is_valid())
-			        {
-			            Upload::save();
-			            foreach(Upload::get_files() as $file)
-			            {
-			            	// var_dump($_FILES['photo']['saved_as']);
-			            	$photoToSave = 'http://'.$_SERVER['SERVER_NAME'].'/coctelTV_api/public/assets/img/'.$file['saved_as'];
-			            }
-			        }
-
-			        foreach (Upload::get_errors() as $file)
-			        {
-			            return $this->response(array(
-			                'code' => 500,
-			                'message' => 'Error en el servidor',
-			                'data' => $file 
-			            ));
-			        }
-		         //FALTA AQUI GUARDAR LOS CAMBIOS DEL PICTURE PROFILE DEL USER. Y EL MENSAJE 200
-			       	$user->profilePicture = $photoToSave;
-			       	$user->save();
-
-			       	$userName = $user->userName;
-				    $password = $user->password;
-				    $id = $user->id;
-				    $email = $user->email;
-				    $id_role = $user->id_role;
-				    $profilePicture = $user->profilePicture;
-
-					$token = $this->encodeToken($userName, $password, $id, $email, $id_role, $profilePicture);
-					$arrayData = array();
-			        $arrayData['token'] = $token;
-			      	return $this->respuesta(201, 'Guardada perfectamente', $arrayData['token']);
-
-		        
-	        }
-	        catch (Exception $e)
-	        {
-	        	return $this->respuesta(500, $e->getMessage(),'');
-		  	}      
-    	 }
-    	 else
-    	 {
-    	 	return $this->respuesta(401, 'No autenticado','');
-     	 }
-	 }
 }
 
 

@@ -18,7 +18,7 @@ class Locals
                 'holidays' => array('type' => 'varchar', 'constraint' => 300),
                 'morning' => array('type' => 'varchar', 'constraint' => 300),
                 'evening' => array('type' => 'varchar', 'constraint' => 300),
-                'profilePicture' => array('type' => 'varchar', 'constraint' => 500),
+                'profilePLocal' => array('type' => 'varchar', 'constraint' => 500),
                 'city' => array('type' => 'varchar', 'constraint' => 300),
                 'city2' => array('type' => 'varchar', 'constraint' => 300),
                 'x' => array('type' => 'varchar', 'constraint' => 100, NULL),
