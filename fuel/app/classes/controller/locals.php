@@ -85,7 +85,7 @@ class Controller_Locals extends Controller_Base
                            return $json;
               }
               //evening
-              if( !isset($_POST['evening']) || empty($_POST['evening']))
+              if(!isset($_POST['evening']) || empty($_POST['evening']))
               {
                         $json = $this->response(array(
                                'code' => 400,
@@ -346,5 +346,5 @@ class Controller_Locals extends Controller_Base
             }
         }
     }    
-  }
+}
 ?>

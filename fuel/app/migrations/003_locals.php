@@ -20,7 +20,7 @@ class Locals
                 'evening' => array('type' => 'varchar', 'constraint' => 300),
                 'profilePLocal' => array('type' => 'varchar', 'constraint' => 500),
                 'city' => array('type' => 'varchar', 'constraint' => 300),
-                'city2' => array('type' => 'varchar', 'constraint' => 300),
+                'city2' => array('type' => 'varchar', 'constraint' => 300, NULL),
                 'x' => array('type' => 'varchar', 'constraint' => 100, NULL),
                 'y' => array('type' => 'varchar', 'constraint' => 100, NULL),
                 'id_user' => array('type'=> 'int', 'constraint' => 100)
