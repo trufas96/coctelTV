@@ -314,8 +314,7 @@ class Controller_Locals extends Controller_Base
         if($arrayAuthenticated['authenticated'])
         {
         $decodedToken = $this->decode($arrayAuthenticated['data']);
-            if ($decodedToken->id != 1)
-            {
+            
             $locals = Model_Locals::find('all');
               if(!empty($locals))
               {
@@ -339,11 +338,7 @@ class Controller_Locals extends Controller_Base
                     ));
                     return $json;
               }
-            }
-              else
-            {
-                return $this->respuesta(400, 'Eres el admin', '');
-            }
+            
         }
     }    
 }

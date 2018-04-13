@@ -262,20 +262,39 @@ class Controller_Users extends Controller_Base
     	
     	 if($arrayAuthenticated['authenticated'])
     	 {
-	    		$decodedToken = $this->decodeToken();
-	    			$arrayData = array();
-	    			$arrayData['userName'] = $decodedToken->userName;
-	    			$arrayData['email'] = $decodedToken->email;
-	    			//$arrayData['profilePicture'] = $decodedToken->profilePicture;		    			
-	    			return $this->respuesta(200, 'info User', $arrayData);				
-    	}
-    	else
-    	{
-    			return $this->respuesta(401, 'NO AUTORIZACION','');
-    	}
+	    		try {
+               
+                $users = Model_Users::find('all');
+	            $indexedUsers = Arr::reindex($users);
+	            foreach ($indexedUsers as $key => $user) {
+	                	$userName[] = $user->userName;
+		            	$surName[] = $user->surName;
+		            	$mobile[] = $user->mobile;
+		            	$password[] = $user->password;
+		            	$id[] = $user->id;
+		            	$email[] = $user->email;
+		            	$id_role[] = $user->id_role;
+		            	$profilePicture[] = $user->profilePicture;
+	            }
+                //AL METER BIEN LOS DATOS SE TE CREA BIEN LA CANCION
+                $json = $this->response(array(
+                    'code' => 200,
+                    'message' => 'Canciones',
+                    'data' => $indexedUsers
+                ));
+                return $json;
+            } 
+            catch (Exception $e) 
+            {
+                //ERROR EN EL SERVIDOR O ERROR DE RED
+                return $this->respuesta(500, 'Error del servidor', '');
+            }
+        }
+        else
+        {
+            //METE EL TOKEN EN LA AUTHENTICACION
+        	return $this->respuesta(401, 'Usuario no autenticado', '');
+        }
+        
     }
-
-    
 }
-
-
