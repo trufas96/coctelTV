@@ -279,7 +279,7 @@ class Controller_Users extends Controller_Base
                 //AL METER BIEN LOS DATOS SE TE CREA BIEN LA CANCION
                 $json = $this->response(array(
                     'code' => 200,
-                    'message' => 'Canciones',
+                    'message' => 'Usuarios',
                     'data' => $indexedUsers
                 ));
                 return $json;
