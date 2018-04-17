@@ -94,19 +94,7 @@ class Controller_Locals extends Controller_Base
                            ));
                            return $json;
               }
-              //profilePLocal
-              if( !isset($_POST['profilePLocal']) || empty($_POST['profilePLocal']))
-              {
-                        $arrayData = array();
-                        $arrayData['files'] = $_FILES;
-                        $arrayData['post'] = $_POST; 
-                           $json = $this->response(array(
-                               'code' => 400,
-                               'message' => 'La photo esta vacia',
-                               'data' =>  $arrayData
-                           ));
-                           return $json;
-              }
+              
               //city
               if( !isset($_POST['city']) || empty($_POST['city']))
               {
@@ -148,7 +136,19 @@ class Controller_Locals extends Controller_Base
                            return $json;
               }
 
-
+              //profilePLocal
+              if( !isset($_POST['profilePLocal']) || empty($_POST['profilePLocal']))
+              {
+                        $arrayData = array();
+                        $arrayData['files'] = $_FILES;
+                        $arrayData['post'] = $_POST; 
+                           $json = $this->response(array(
+                               'code' => 400,
+                               'message' => 'La photo esta vacia',
+                               'data' =>  $arrayData
+                           ));
+                           return $json;
+              }
               $config = array(
                   'path' => DOCROOT . 'assets/img',
                   'randomize' => true,

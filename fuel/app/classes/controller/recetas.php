@@ -9,11 +9,32 @@ public function post_create()
      if($arrayAuthenticated['authenticated'])
      {
       $decodedToken = $this->decode($arrayAuthenticated['data']);
-      if ($decodedToken->id == $this->id_admin)
-      {
           try 
           {
-             //photo
+             
+              //ingredientes
+              if(!isset($_POST['ingrediente1']) || empty($_POST['ingrediente1']) ||
+                  !isset($_POST['ingrediente2']) || empty($_POST['ingrediente2']) ||
+                  !isset($_POST['ingrediente3']) || empty($_POST['ingrediente3']) ||
+                  !isset($_POST['ingrediente4']) || empty($_POST['ingrediente4']) ||
+                  !isset($_POST['ingrediente5']) || empty($_POST['ingrediente5']) ||
+                  !isset($_POST['ingrediente6']) || empty($_POST['ingrediente6']) ||
+                  !isset($_POST['ingrediente7']) || empty($_POST['ingrediente7']) ||
+                  !isset($_POST['ingrediente8']) || empty($_POST['ingrediente8']) ||
+                  !isset($_POST['ingrediente9']) || empty($_POST['ingrediente9']) ||
+                  !isset($_POST['ingrediente10']) || empty($_POST['ingrediente10']) || 
+                  !isset($_POST['name']) || !empty($_POST['name'])
+                )
+              {
+                        $json = $this->response(array(
+                               'code' => 400,
+                               'message' => 'algun ingrediente esta vacio',
+                               'data' => '' 
+                           ));
+                           return $json;
+              }
+
+            //photo
              if (!isset($_FILES['photo']) || empty($_FILES['photo'])) 
              {
                         $arrayData = array();
@@ -28,38 +49,7 @@ public function post_create()
               }
 
               //name
-              if(!isset($_POST['name']) || empty($_POST['name']))
-              {
-                        $json = $this->response(array(
-                               'code' => 400,
-                               'message' => 'El nombre esta vacio',
-                               'data' => '' 
-                           ));
-                           return $json;
-              }
-
-              //ingredientes
-              if(!isset($_POST['ingrediente1']) || empty($_POST['ingrediente1'])
-                  !isset($_POST['ingrediente2']) || empty($_POST['ingrediente2'])
-                  !isset($_POST['ingrediente3']) || empty($_POST['ingrediente3'])
-                  !isset($_POST['ingrediente4']) || empty($_POST['ingrediente4'])
-                  !isset($_POST['ingrediente5']) || empty($_POST['ingrediente5'])
-                  !isset($_POST['ingrediente6']) || empty($_POST['ingrediente6'])
-                  !isset($_POST['ingrediente7']) || empty($_POST['ingrediente7'])
-                  !isset($_POST['ingrediente8']) || empty($_POST['ingrediente8'])
-                  !isset($_POST['ingrediente9']) || empty($_POST['ingrediente9'])
-                  !isset($_POST['ingrediente10']) || empty($_POST['ingrediente10'])
-                )
-              {
-                        $json = $this->response(array(
-                               'code' => 400,
-                               'message' => 'algun ingrediente esta vacio',
-                               'data' => '' 
-                           ));
-                           return $json;
-              }
-
-
+              
               $config = array(
                   'path' => DOCROOT . 'assets/img',
                   'randomize' => true,
@@ -97,11 +87,7 @@ public function post_create()
                          return $this->respuesta(500, $e->getMessage(), '');
           }
    
-        }
-        else 
-        {
-                return $this->respuesta(400, 'No eres el admin', '');
-        }
+        
     }     
 }
 

@@ -1,8 +1,10 @@
 <?php
+use Firebase\JWT\JWT;
 class Controller_Offers extends Controller_Base
 {
-   public $id_admin = 1;
- public function post_create()
+  //esta hecho falta probar
+  //AQUI TENGO UN SIMPLE REGISTRO PONIENDO LOS DATOS NECESARIOS QUE SON nameOffer, percentage, nameLocal, normalPrize, MOBILE, EMAIL(mirar si necesitan coordenadas o tengo que harcodearlas.)
+    public function post_create()
     {
         try 
         {
@@ -23,20 +25,7 @@ class Controller_Offers extends Controller_Base
               {
                 return $this->respuesta(400, 'Coordenadas no definidas', '');
             }
-            if(!empty($_POST['nameOffer']) && !empty($_POST['percentage'])  && !empty($_POST['nameLocal']) && !empty($_POST['normalPrize']) && !empty($_POST['x']) && !empty($_POST['y']) )
-            {
-              if(strlen($_POST['normalPrize']) < 5)
-              {
-                return $this->respuesta(400, 'La contraseña debe tener al menos 5 caracteres', '');
-              }
-              $input = $_POST;
-              $newOffer = $this->newOffer($input);
-              $json = $this->saveOffer($newOffer);
-          }
-          else
-          {
-            return $this->respuesta(400, 'Algun campo vacio', '');
-          }
+            
         }
         catch (Exception $e){
           return $this->respuesta(500, $e->getMessage(), '');
@@ -46,138 +35,64 @@ class Controller_Offers extends Controller_Base
     //esta hecho falta probar
     private function newOffer($input)
     {
-        $Offer = new Model_Offers();
-            $Offer->nameOffer = $input['nameOffer'];
-            $Offer->percentage = $input['percentage'];
-            $Offer->nameLocal = $input['nameLocal'];
-            $Offer->normalPrize = $input['normalPrize'];
-            $Offer->x = $input['x'];
-            $Offer->y = $input['y'];
-            return $Offer;
+        $offer = new Model_Offers();
+            $offer->nameOffer = $input['nameOffer'];
+            $offer->percentage = $input['percentage'];
+            $offer->nameLocal = $input['nameLocal'];
+            $offer->email = $input['email'];
+            $offer->normalPrize = $input['normalPrize'];
+            $offer->x = $input['x'];
+            $offer->y = $input['y'];
+            return $offer;
     }
 
   //esta hecho falta probar
-    private function saveOffer($Offer)
+    private function saveOffer($offer)
     {
-      $OfferExists = Model_Offers::find('all', 
-                    array('where' => array(
-                              array('nameOffer', '=', $Offer->nameOffer),
-                                )
-                      )
-                  );
-      if(empty($OfferExists)){
-        $OfferToSave = $Offer;
-        $OfferToSave->save();
+      $offerExists = Model_Offers::find('all');
+      if(empty($offerExists)){
+        $offerToSave = $offer;
+        $offerToSave->save();
         $arrayData = array();
-        $arrayData['nameOffer'] = $Offer->nameOffer;
+        $arrayData['nameOffer'] = $offer->nameOffer;
         return $this->respuesta(201, 'Usuario creado', $arrayData);
       }else{
         return $this->respuesta(204, 'Usuario ya registrado', '');
       }
     }
 
-    
-  //terminado para probar 
-    public function post_delete()
-    {
-     $authenticated = $this->authenticate();
-     $arrayAuthenticated = json_decode($authenticated, true);
-     
-      if($arrayAuthenticated['authenticated']){
-        $decodedToken = JWT::decode($arrayAuthenticated["data"], MY_KEY, array('HS256'));
-        if(!empty($_POST['id']))
-        {
-            $offer = Model_Offers::find($_POST['id']);
-            if(isset($offer))
-            {
-                if($decodedToken->id == $offer->id_Offer)
-                {
-                  $offer->delete(); 
-     
-                  $json = $this->response(array(
-                       'code' => 200,
-                       'message' => 'offer borrado',
-                       'data' => ''
-                   ));
-                   return $json;
-                }
-                else
-                {
-                 $json = $this->response(array(
-                     'code' => 401,
-                     'message' => 'No puede borrar un offer que no es tuyo',
-                     'data' => ''
-                  ));
-                  return $json;
-                }
-            }
-            else
-            {
+  //esta hecho falta probar
+  public function get_show()
+  {
+    $authenticated = $this->authenticate();
+      $arrayAuthenticated = json_decode($authenticated, true);
+      
+       if($arrayAuthenticated['authenticated'])
+       {
+          try {
+               
+              $offers = Model_Offers::find('all');
+              $indexedOffers = Arr::reindex($offers);
+              
+              //AL METER BIEN LOS DATOS SE TE CREA BIEN LA CANCION
                 $json = $this->response(array(
-                     'code' => 401,
-                     'message' => 'offer no valido',
-                     'data' => ''
+                    'code' => 200,
+                    'message' => 'Usuarios',
+                    'data' => $indexedOffers
                 ));
                 return $json;
+            } 
+            catch (Exception $e) 
+            {
+                //ERROR EN EL SERVIDOR O ERROR DE RED
+                return $this->respuesta(500, 'Error del servidor', '');
             }
         }
         else
         {
-                $json = $this->response(array(
-                    'code' => 400,
-                    'message' => 'El id no puede estar vacio',
-                    'data' => ''
-                ));
-                return $json;
+            //METE EL TOKEN EN LA AUTHENTICACION
+          return $this->respuesta(401, 'Usuario no autenticado', '');
         }
-          }
-          else
-          {
-               $json = $this->response(array(
-                   'code' => 400,
-                   'message' => 'Falta el autorizacion',
-                   'data' => ''
-                ));
-                return $json;
-          }
+        
     }
-
-
-    //terminaod y probar
-    //update
-    public function get_show()
-    {
-        $authenticated = $this->authenticate();
-        $arrayAuthenticated = json_decode($authenticated, true);
-        if($arrayAuthenticated['authenticated'])
-        {
-        $decodedToken = $this->decode($arrayAuthenticated['data']);
-            
-            $offers = Model_Offers::find('all');
-              if(!empty($offers))
-              {
-                  foreach ($offers as $key => $offer) 
-                  {
-                      $arrayoffer[] = $offer;
-                  }
-                      $json = $this->response(array(
-                        'code' => 200,
-                        'message' => 'mostrando lista de offers del usuario', 
-                        'data' => $arrayoffer
-                        )); 
-                        return $json; 
-              }
-                else
-              {
-                  $json = $this->response(array(
-                    'code' => 202,
-                    'message' => 'Aun no tienes ningun offer',
-                    'data' => ''
-                    ));
-                    return $json;
-              }
-            
-        }
-    }    
 }
-?>
