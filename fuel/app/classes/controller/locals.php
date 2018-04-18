@@ -125,6 +125,7 @@ class Controller_Locals extends Controller_Base
                            ));
                            return $json;
               }
+              
               //y
               if( !isset($_POST['y']) || empty($_POST['y']))
               {
@@ -163,7 +164,7 @@ class Controller_Locals extends Controller_Base
                   foreach(Upload::get_files() as $file)
                   {
                     // var_dump($_FILES['photo']['saved_as']);
-                    $photoToSave = 'http://'.$_SERVER['SERVER_NAME'].'/coctelTV_api/public/assets/img/'.$file['saved_as'];
+                    $photoToSave = 'http://'.$_SERVER['SERVER_NAME'].'coctelTV_api/public/assets/img/'.$file['saved_as'];
                   }
               }
 
@@ -183,7 +184,7 @@ class Controller_Locals extends Controller_Base
 
           catch (Exception $e)
           {
-                         return $this->respuesta(500, $e->getMessage(), '');
+              return $this->respuesta(500, $e->getMessage(), '');
           }
         
     }     

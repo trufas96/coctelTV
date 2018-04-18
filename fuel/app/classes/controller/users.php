@@ -29,6 +29,8 @@ class Controller_Users extends Controller_Base
             	{
             		return $this->respuesta(400, 'Coordenadas no definidas', '');
             }
+
+            
             if(!empty($_POST['userName']) && !empty($_POST['surName'])  && !empty($_POST['born']) && !empty($_POST['password']) && !empty($_POST['mobile']) && !empty($_POST['email']) )
             {
             	if(strlen($_POST['password']) < 5)

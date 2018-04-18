@@ -102,3 +102,4 @@ ERROR - 2018-04-17 16:11:34 --> Error - Call to undefined function Model_Locals(
 WARNING - 2018-04-17 16:11:52 --> Fuel\Core\Fuel::init - The configured locale en_US is not installed on your system.
 WARNING - 2018-04-17 16:16:51 --> Fuel\Core\Fuel::init - The configured locale en_US is not installed on your system.
 WARNING - 2018-04-17 16:17:23 --> Fuel\Core\Fuel::init - The configured locale en_US is not installed on your system.
+WARNING - 2018-04-17 16:31:36 --> Fuel\Core\Fuel::init - The configured locale en_US is not installed on your system.

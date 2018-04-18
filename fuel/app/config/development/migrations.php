@@ -12,7 +12,6 @@ return array(
         3 => '004_recetas',
         4 => '005_recetasLocal',
         5 => '006_recetasToLocal',
-        6 => '007_offers',
       ),
     ),
     'module' => 

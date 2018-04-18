@@ -8,23 +8,20 @@ public function post_create()
     $arrayAuthenticated = json_decode($authenticated, true);
      if($arrayAuthenticated['authenticated'])
      {
-      $decodedToken = $this->decode($arrayAuthenticated['data']);
           try 
           {
-             
               //ingredientes
-              if(!isset($_POST['ingrediente1']) || empty($_POST['ingrediente1']) ||
-                  !isset($_POST['ingrediente2']) || empty($_POST['ingrediente2']) ||
-                  !isset($_POST['ingrediente3']) || empty($_POST['ingrediente3']) ||
-                  !isset($_POST['ingrediente4']) || empty($_POST['ingrediente4']) ||
-                  !isset($_POST['ingrediente5']) || empty($_POST['ingrediente5']) ||
-                  !isset($_POST['ingrediente6']) || empty($_POST['ingrediente6']) ||
-                  !isset($_POST['ingrediente7']) || empty($_POST['ingrediente7']) ||
-                  !isset($_POST['ingrediente8']) || empty($_POST['ingrediente8']) ||
-                  !isset($_POST['ingrediente9']) || empty($_POST['ingrediente9']) ||
-                  !isset($_POST['ingrediente10']) || empty($_POST['ingrediente10']) || 
-                  !isset($_POST['name']) || !empty($_POST['name'])
-                )
+              if(!isset($_POST['ingrediente1']) ||
+                !isset($_POST['ingrediente2']) ||
+                !isset($_POST['ingrediente3']) ||
+                !isset($_POST['ingrediente4']) ||
+                !isset($_POST['ingrediente5']) ||
+                !isset($_POST['ingrediente6']) ||
+                !isset($_POST['ingrediente7']) ||
+                !isset($_POST['ingrediente8']) ||
+                !isset($_POST['ingrediente9']) ||
+                !isset($_POST['ingrediente10']) ||
+                !isset($_POST['name']))
               {
                         $json = $this->response(array(
                                'code' => 400,
@@ -34,6 +31,27 @@ public function post_create()
                            return $json;
               }
 
+              if(!empty($_POST['ingrediente1']) ||
+                !empty($_POST['ingrediente2']) ||
+                !empty($_POST['ingrediente3']) ||
+                !empty($_POST['ingrediente4']) ||
+                !empty($_POST['ingrediente5']) ||
+                !empty($_POST['ingrediente6']) ||
+                !empty($_POST['ingrediente7']) ||
+                !empty($_POST['ingrediente8']) ||
+                !empty($_POST['ingrediente9']) ||
+                !empty($_POST['ingrediente10']) ||
+                !empty($_POST['name']))
+              {
+              
+                $input = $_POST;
+                $newReceta = $this->newReceta($input);
+                $json = $this->saveReceta($newReceta);
+              }
+                else
+              { 
+                  return $this->respuesta(400, 'Algun campo vacio', '');
+              }
             //photo
              if (!isset($_FILES['photo']) || empty($_FILES['photo'])) 
              {
@@ -48,7 +66,6 @@ public function post_create()
                            return $json;
               }
 
-              //name
               
               $config = array(
                   'path' => DOCROOT . 'assets/img',
@@ -63,8 +80,7 @@ public function post_create()
                   Upload::save();
                   foreach(Upload::get_files() as $file)
                   {
-                    // var_dump($_FILES['photo']['saved_as']);
-                    $photoToSave = 'http://'.$_SERVER['SERVER_NAME'].'/zoo/minusculasNombres/public/assets/img/'.$file['saved_as'];
+                    $photoToSave = 'http://'.$_SERVER['SERVER_NAME'].'/coctelTV_api/public/assets/img/'.$file['saved_as'];
                   }
               }
 
@@ -76,32 +92,38 @@ public function post_create()
                       'data' => $file 
                   ));
               }
-                  
-                         $newStory = $this->newStory($_POST, $photoToSave, $decodedToken);
-                         $json = $this->saveStory($newStory);
-                         return $json;
-          }
+          
+        }
+        catch (Exception $e)
+        {
+          return $this->respuesta(500, $e->getMessage(), '');
+        }      
+    }
 
-          catch (Exception $e)
-          {
-                         return $this->respuesta(500, $e->getMessage(), '');
-          }
+}
+            
+         
    
         
-    }     
-}
+    
 
 
 private function newReceta($input)
 {
   $receta = Model_Recetas();
   $receta->name = $input['name'];
-  $receta->description = $input['description'];
-  $receta->photo = "";
-  $receta->x = $input['x'];
-  $receta->y = $input['y'];
-  $receta->id_type = $input['id_type'];
-  $receta->id_user = $this->id_admin;
+  //$receta->description = $input['description'];
+  $receta->profilePReceta = $photoToSave;
+  $receta->ingrediente1 = $input['ingrediente1'];
+  $receta->ingrediente2 = $input['ingrediente2'];
+  $receta->ingrediente3 = $input['ingrediente3'];
+  $receta->ingrediente4 = $input['ingrediente4'];
+  $receta->ingrediente5 = $input['ingrediente5'];
+  $receta->ingrediente6 = $input['ingrediente6'];
+  $receta->ingrediente7 = $input['ingrediente7'];
+  $receta->ingrediente8 = $input['ingrediente8'];
+  $receta->ingrediente9 = $input['ingrediente9'];
+  $receta->ingrediente10 = $input['ingrediente10'];
   return $receta;
 }
 
